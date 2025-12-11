@@ -66,8 +66,31 @@ async function deleteAllData() {
   }
 }
 
+//删除数据库一项id
+async function deleteData(targetId) {
+  try {
+    const db = await getDb();
+    const collection = db.collection(COLLECTION_NAME);
+    const result = await collection.deleteMany({});
+    
+    return {
+      success: true,
+      deletedCount: result.deletedCount,
+      message: `成功清空集合，共删除 ${result.deletedCount} 条数据`
+    };
+  } catch (error) {
+    console.error(`清空集合失败 [${collectionName}]:`, error);
+    return {
+      success: false,
+      error: error.message,
+      message: '清空集合失败'
+    };
+  }
+}
+
 module.exports = {
   updata,
   getdata,
-  deleteAllData
+  deleteAllData,
+  deleteData
 }
