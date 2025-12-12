@@ -23,7 +23,6 @@ const tavily = new TavilySearch({
   searchDepth: "advanced",
   includeRawContent: false, 
 });
-console.log(tavily)
 
 
 
@@ -144,6 +143,10 @@ app.delete('/api/delete',async (req, res) => {
    try {
     // 从路径参数中获取id（注意转成数字类型，匹配数据库字段类型）
     const id = Number(req.params.id);
+    console.log(id)
+    if(!id){
+      return
+    }
     // 将id传入数据库删除函数
     const result = await deleteData(id);
     res.send({ success: true, data: result });

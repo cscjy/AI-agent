@@ -71,7 +71,7 @@ async function deleteData(targetId) {
   try {
     const db = await getDb();
     const collection = db.collection(COLLECTION_NAME);
-    const result = await collection.deleteMany({});
+    const result = await collection.deleteOne({ _id: targetId });
     
     return {
       success: true,
