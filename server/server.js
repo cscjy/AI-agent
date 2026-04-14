@@ -203,12 +203,8 @@ app.post('/api/upload-image', (req, res) => {
 // server.js 中新增 GET 路由处理 SSE
 app.get('/api/stream', async (req, res) => {
   console.log('连接成功');
-  //获取用户数据库数据，结合上下文使用
-  const dbData = await getdata();
-  const userContext = Array.isArray(dbData.data)
-    ? dbData.data.map(item => ({ role: 'user', content: item.userData }))
-    : [];
-  // 设置 SSE 响应头
+
+  // 设置 SSE 响应头（必须在任何可能抛出异常的操作之前）
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
@@ -216,6 +212,10 @@ app.get('/api/stream', async (req, res) => {
   const origin = req.headers.origin;
   if (origin && allowedOrigins.has(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+  } else if (allowedOrigins.has('*')) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  } else if (allowedOrigins.size > 0) {
+    res.setHeader('Access-Control-Allow-Origin', Array.from(allowedOrigins)[0]);
   } else {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
   }
@@ -227,6 +227,12 @@ app.get('/api/stream', async (req, res) => {
   const referenceImageUrl = typeof req.query.imageUrl === 'string' ? req.query.imageUrl : '';
 
   try {
+    // 获取用户数据库数据，结合上下文使用
+    const dbData = await getdata();
+    const userContext = Array.isArray(dbData.data)
+      ? dbData.data.map(item => ({ role: 'user', content: item.userData }))
+      : [];
+
     if (referenceImageUrl) {
       await streamImageAnalysis({ prompt: userPrompt, referenceUrl: referenceImageUrl, res });
     }
@@ -276,7 +282,7 @@ app.get('/api/stream', async (req, res) => {
     console.error('处理错误:', error);
     res.write(`data: ${JSON.stringify({
       type: 'error',
-      content: useInternet ? '联网搜索过程中发生错误，请稍后重试' : '模型调用出错，请稍后重试',
+      content: error.message || (useInternet ? '联网搜索过程中发生错误，请稍后重试' : '模型调用出错，请稍后重试'),
     })} \n\n`);
   }
 
