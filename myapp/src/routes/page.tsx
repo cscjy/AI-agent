@@ -1,5 +1,4 @@
 import dbCRUD from '@/api/lambda/indexedDB';
-import { Link } from '@modern-js/runtime/router';
 import { useEffect, useRef, useState } from 'react';
 import { useContext } from 'react';
 import { get } from '../api/lambda/data';

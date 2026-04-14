@@ -5,6 +5,9 @@ export default defineConfig({
   runtime: {
     router: true,
   },
+  html: {
+    disableHtmlFolder: true,
+  },
   plugins: [
     appTools({
       bundler: 'rspack', // Set to 'webpack' to enable webpack
