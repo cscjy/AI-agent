@@ -57,7 +57,7 @@ async function deleteAllData() {
       message: `成功清空集合，共删除 ${result.deletedCount} 条数据`
     };
   } catch (error) {
-    console.error(`清空集合失败 [${collectionName}]:`, error);
+    console.error(`清空集合失败:`, error);
     return {
       success: false,
       error: error.message,
@@ -66,24 +66,24 @@ async function deleteAllData() {
   }
 }
 
-//删除数据库一项id
+//删除数据库一项（按 time 字段匹配，因为前端传入的 id 是 time）
 async function deleteData(targetId) {
   try {
     const db = await getDb();
     const collection = db.collection(COLLECTION_NAME);
-    const result = await collection.deleteOne({ _id: targetId });
+    const result = await collection.deleteOne({ time: String(targetId) });
     
     return {
       success: true,
       deletedCount: result.deletedCount,
-      message: `成功清空集合，共删除 ${result.deletedCount} 条数据`
+      message: `成功删除 ${result.deletedCount} 条数据`
     };
   } catch (error) {
-    console.error(`清空集合失败 [${collectionName}]:`, error);
+    console.error(`删除数据失败:`, error);
     return {
       success: false,
       error: error.message,
-      message: '清空集合失败'
+      message: '删除数据失败'
     };
   }
 }
