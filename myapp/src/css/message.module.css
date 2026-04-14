@@ -1,0 +1,98 @@
+.container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 680px;
+  max-width: calc(100% - 80px);
+  background-color: white;
+}
+.inputArea {
+  border: 1px solid #dde1ea;
+  border-radius: 20px;
+  padding: 14px 18px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  background: #fff;
+}
+.inputTopRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#textArea {
+  width: 100%;
+  border: none;
+  font-size: 15px;
+  padding: 0;
+  background: transparent;
+  resize: none;
+}
+#textArea:focus {
+  box-shadow: none;
+}
+.click {
+  width: 38px;
+  height: 38px;
+}
+.inputActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #333;
+}
+.actionLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.actionRight {
+  display: flex;
+  align-items: center;
+}
+.fileInput {
+  display: none;
+}
+.iconButton,
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  background: none;
+  color: #333;
+  cursor: pointer;
+  padding: 4px 6px;
+  font-size: 13px;
+}
+.separator {
+  color: #d0d5e2;
+}
+.previewBanner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background-color: #f8f9fb;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+.previewImage {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.previewText {
+  display: flex;
+  flex-direction: column;
+}
+.previewLabel {
+  font-size: 12px;
+  color: #888;
+}
+.previewName {
+  font-size: 13px;
+  color: #333;
+}

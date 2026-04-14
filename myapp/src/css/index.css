@@ -1,0 +1,12 @@
+body {
+  margin: 0; /* 清除body默认外边距 */
+  padding: 0; /* 清除body默认内边距 */
+  overflow: auto; /* 直接隐藏整个页面的滚动条（可选，按需用） */
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: Outfit, sans-serif;
+}
