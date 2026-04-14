@@ -8,11 +8,20 @@ const { ChatOpenAI }  = require("@langchain/openai");
 const { TavilySearch  } = require("@langchain/tavily") ;
 const { HumanMessage, SystemMessage } = require("@langchain/core/messages") ;
 
-const DOUBAO_TEXT_API_KEY = process.env.DOUBAO_TEXT_API_KEY || "c5cce085-6d68-45d8-95f2-e208223a1edc";
-const DOUBAO_IMAGE_API_KEY = process.env.DOUBAO_IMAGE_API_KEY || "982f5437-d320-4cb8-811e-6e3fc1fafbd0";
-const DOU_BAO_BASE_URL = 'https://ark.cn-beijing.volces.com/api/v3';
+const DOUBAO_TEXT_API_KEY = process.env.DOUBAO_TEXT_API_KEY;
+const DOUBAO_IMAGE_API_KEY = process.env.DOUBAO_IMAGE_API_KEY;
+const DOU_BAO_BASE_URL = process.env.DOU_BAO_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3';
 const DOU_BAO_TEXT_MODEL = process.env.DOU_BAO_TEXT_MODEL || 'doubao-seed-2-0-code-preview-260215';
 const DOU_BAO_IMAGE_MODEL = process.env.DOU_BAO_IMAGE_MODEL || 'doubao-seedream-5-0-260128';
+
+if (!DOUBAO_TEXT_API_KEY) {
+  console.error('错误：缺少环境变量 DOUBAO_TEXT_API_KEY');
+  process.exit(1);
+}
+if (!DOUBAO_IMAGE_API_KEY) {
+  console.error('错误：缺少环境变量 DOUBAO_IMAGE_API_KEY');
+  process.exit(1);
+}
 
 
 const llm = new ChatOpenAI({
@@ -27,9 +36,15 @@ const llm = new ChatOpenAI({
   streaming:true
 });
 
+const TAVILY_API_KEY = process.env.TAVILY_API_KEY;
+if (!TAVILY_API_KEY) {
+  console.error('错误：缺少环境变量 TAVILY_API_KEY');
+  process.exit(1);
+}
+
 // Tavily搜索工具初始化
 const tavily = new TavilySearch({
-  tavilyApiKey:"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",
+  tavilyApiKey: TAVILY_API_KEY,
   maxResults: 3,
   searchDepth: "advanced",
   includeRawContent: false, 
@@ -126,13 +141,23 @@ app.use(express.json()); // 解析JSON格式的请求体
 app.use(express.urlencoded({ extended: true })); // 解析表单格式的请求体
 app.use('/uploads', express.static(uploadDir));
 
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
 // 处理全局CORS
-const allowedOrigins = new Set(['http://localhost:8080', 'http://localhost:8081']);
+const allowedOrigins = new Set(
+  (process.env.ALLOWED_ORIGINS || 'http://localhost:8080,http://localhost:8081').split(',').map(s => s.trim())
+);
 
 app.use((req,res,next) => {
   const requestOrigin = req.headers.origin;
+  const allowedList = Array.from(allowedOrigins);
   if (requestOrigin && allowedOrigins.has(requestOrigin)) {
     res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+  } else if (allowedList.includes('*')) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  } else if (allowedList.length > 0) {
+    res.setHeader('Access-Control-Allow-Origin', allowedList[0]);
   } else {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081');
   }
@@ -163,7 +188,7 @@ app.post('/api/upload-image', (req, res) => {
     if (!req.file) {
       return res.status(400).send({ success: false, message: '未获取到图片' });
     }
-    const fileUrl = `http://localhost:3000/uploads/${req.file.filename}`;
+    const fileUrl = `${BASE_URL}/uploads/${req.file.filename}`;
     res.send({
       success: true,
       message: '图片上传成功',
@@ -287,6 +312,6 @@ app.delete('/api/delete',async (req, res) => {
   }
 })
 
-app.listen(3000, () => {
-   console.log('HTTP 服务器启动于 3000 端口');
+app.listen(PORT, () => {
+   console.log(`HTTP 服务器启动于 ${PORT} 端口`);
 });

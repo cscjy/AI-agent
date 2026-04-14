@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 
 export type UploadResponse = {
   success: boolean;
@@ -13,7 +14,7 @@ export const uploadImage = async (file: File): Promise<UploadResponse> => {
   formData.append('image', file);
 
   const { data } = await axios.post<UploadResponse>(
-    'http://localhost:3000/api/upload-image',
+    `${API_BASE_URL}/api/upload-image`,
     formData,
     {
       headers: { 'Content-Type': 'multipart/form-data' },

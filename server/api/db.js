@@ -2,9 +2,9 @@
 const { MongoClient } = require('mongodb');
 
 // MongoDB连接URI（本地或远程）
-const uri = 'mongodb://127.0.0.1:27017';
+const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017';
 // 数据库名称
-const dbName = 'user_db';
+const dbName = process.env.MONGODB_DB_NAME || 'user_db';
 
 // 单例客户端实例
 let client;

@@ -93,7 +93,7 @@ const Index = () => {
           image: pendingMessage?.image,
         },
         setHtml,
-        context,
+        context || null,
       );
     }
     sendDatatoAI();

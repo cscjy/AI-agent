@@ -1,5 +1,6 @@
 import tootip from '@/component/useTootip';
 import axios from 'axios';
+import { API_BASE_URL } from '../config';
 import dbCRUD from './indexedDB';
 type Message = {
   prompt: string;
@@ -27,7 +28,7 @@ export const get = async (
     params.append('imageUrl', message.image.url);
   }
   eventSource = new EventSource(
-    `http://localhost:3000/api/stream?${params.toString()}`,
+    `${API_BASE_URL}/api/stream?${params.toString()}`,
   );
   console.log('开始连接');
   // 监听消息事件（核心）
@@ -67,7 +68,7 @@ export const get = async (
           //本地存储交流数据
           await dbCRUD.add(store);
           context?.setDataChange(!context.dataChange);
-          await axios.post('http://localhost:3000/api/data', store, {
+          await axios.post(`${API_BASE_URL}/api/data`, store, {
             withCredentials: true, // 需与后端credentials: true对应
             headers: { 'Content-Type': 'application/json' },
           });

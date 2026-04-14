@@ -1,4 +1,5 @@
 import dbCRUD from '@/api/lambda/indexedDB';
+import { API_BASE_URL } from '@/api/config';
 import React, { useState, useEffect, useContext } from 'react';
 import { assets } from '../../assets/assets';
 import './SideBard.css';
@@ -22,7 +23,7 @@ const SideBar = () => {
       const list: Array<{ id: number; role: string; message: string }> = [];
       for (const item of data) {
         list.push({
-          id: item?.id,
+          id: item?.id ?? 0,
           role: 'user',
           message: item.userData,
         });
@@ -40,7 +41,7 @@ const SideBar = () => {
     setListMessage(newList);
     dbCRUD.delete(targetId);
     context?.setDataChange(!context?.dataChange);
-    await axios.post(`http://localhost:3000/api/delete?id=${targetId}`);
+    await axios.post(`${API_BASE_URL}/api/delete?id=${targetId}`);
     // 更新state
   };
   return (
