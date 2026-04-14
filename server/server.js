@@ -8,14 +8,13 @@ const { ChatOpenAI }  = require("@langchain/openai");
 const { TavilySearch  } = require("@langchain/tavily") ;
 const { HumanMessage, SystemMessage } = require("@langchain/core/messages") ;
 
-const DOUBAO_TEXT_API_KEY = process.env.DOUBAO_TEXT_API_KEY;
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DOUBAO_IMAGE_API_KEY = process.env.DOUBAO_IMAGE_API_KEY;
 const DOU_BAO_BASE_URL = process.env.DOU_BAO_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3';
-const DOU_BAO_TEXT_MODEL = process.env.DOU_BAO_TEXT_MODEL || 'doubao-seed-2-0-code-preview-260215';
 const DOU_BAO_IMAGE_MODEL = process.env.DOU_BAO_IMAGE_MODEL || 'doubao-seedream-5-0-260128';
 
-if (!DOUBAO_TEXT_API_KEY) {
-  console.error('错误：缺少环境变量 DOUBAO_TEXT_API_KEY');
+if (!DEEPSEEK_API_KEY) {
+  console.error('错误：缺少环境变量 DEEPSEEK_API_KEY');
   process.exit(1);
 }
 if (!DOUBAO_IMAGE_API_KEY) {
@@ -25,13 +24,13 @@ if (!DOUBAO_IMAGE_API_KEY) {
 
 
 const llm = new ChatOpenAI({
-  model: DOU_BAO_TEXT_MODEL,
-  modelProvider: "doubao",
-  apiKey: DOUBAO_TEXT_API_KEY,
+  model: "deepseek-chat",
+  modelProvider: "openai",
+  apiKey: DEEPSEEK_API_KEY,
   // 添加系统提示
   systemMessage: "你是一个专业的助手，回答问题时要简洁明了，并且使用中文。",
   configuration: {
-    baseURL: DOU_BAO_BASE_URL,
+    baseURL: 'https://api.deepseek.com',
   },
   streaming:true
 });
